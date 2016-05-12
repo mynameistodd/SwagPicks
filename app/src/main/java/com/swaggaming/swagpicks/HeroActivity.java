@@ -1,8 +1,7 @@
 package com.swaggaming.swagpicks;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,7 +14,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 public class HeroActivity extends AppCompatActivity {
 
@@ -53,14 +56,14 @@ public class HeroActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
     }
 
@@ -116,11 +119,72 @@ public class HeroActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_hero, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+//            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+//            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            GridView gridview = (GridView) rootView.findViewById(R.id.gridView);
+            gridview.setAdapter(new ImageAdapter(getContext()));
+
+            gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View v,
+                                        int position, long id) {
+                    Toast.makeText(getContext(), "" + position, Toast.LENGTH_SHORT).show();
+                }
+            });
             return rootView;
         }
+
+        public class ImageAdapter extends BaseAdapter {
+            private Context mContext;
+            // references to our images
+            private Integer[] mThumbIds = {
+                    R.drawable.sample_2, R.drawable.sample_3,
+                    R.drawable.sample_4, R.drawable.sample_5,
+                    R.drawable.sample_6, R.drawable.sample_7,
+                    R.drawable.sample_0, R.drawable.sample_1,
+                    R.drawable.sample_2, R.drawable.sample_3,
+                    R.drawable.sample_4, R.drawable.sample_5,
+                    R.drawable.sample_6, R.drawable.sample_7,
+                    R.drawable.sample_0, R.drawable.sample_1,
+                    R.drawable.sample_2, R.drawable.sample_3,
+                    R.drawable.sample_4, R.drawable.sample_5,
+                    R.drawable.sample_6, R.drawable.sample_7
+            };
+
+            public ImageAdapter(Context c) {
+                mContext = c;
+            }
+
+            public int getCount() {
+                return mThumbIds.length;
+            }
+
+            public Object getItem(int position) {
+                return null;
+            }
+
+            public long getItemId(int position) {
+                return 0;
+            }
+
+            // create a new ImageView for each item referenced by the Adapter
+            public View getView(int position, View convertView, ViewGroup parent) {
+                ImageView imageView;
+                if (convertView == null) {
+                    // if it's not recycled, initialize some attributes
+                    imageView = new ImageView(mContext);
+                    imageView.setLayoutParams(new GridView.LayoutParams(200, 200));
+                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    imageView.setPadding(8, 8, 8, 8);
+                } else {
+                    imageView = (ImageView) convertView;
+                }
+
+                imageView.setImageResource(mThumbIds[position]);
+                return imageView;
+            }
+        }
     }
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -149,11 +213,11 @@ public class HeroActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "SECTION 1";
+                    return "Strength";
                 case 1:
-                    return "SECTION 2";
+                    return "Agility";
                 case 2:
-                    return "SECTION 3";
+                    return "Intelligence";
             }
             return null;
         }
